@@ -10,7 +10,7 @@ print(token, chatID)
 
 def request_forever():
     while 1:
-        r = requests.get("https://google.com")
+        r = requests.get("https://loh-s-cti.herokuapp.com/")
         print(r.status_code)
         time.sleep(1)
 
