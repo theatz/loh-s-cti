@@ -9,9 +9,10 @@ chatID = os.environ['CHAT']
 print(token, chatID)
 
 def request_forever():
-    r = requests.get("https://google.com")
-    print(r.status_code)
-    time.sleep(1)
+    while 1:
+        r = requests.get("https://google.com")
+        print(r.status_code)
+        time.sleep(1)
 
 bot = telebot.TeleBot(token)
 @bot.message_handler()
