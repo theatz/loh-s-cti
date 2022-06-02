@@ -12,7 +12,7 @@ def request_forever():
     r = requests.get("google.com")
     time.sleep(1)
 
-
+bot = telebot.TeleBot(token)
 @bot.message_handler()
 def repeat_all_messages(message): # Название функции не играет никакой роли
     print(message.message_id)
@@ -20,5 +20,4 @@ def repeat_all_messages(message): # Название функции не игр�
 
 if __name__ == '__main__':
     threading.Thread(target=request_forever).start()
-    bot = telebot.TeleBot(token)
     bot.infinity_polling()
