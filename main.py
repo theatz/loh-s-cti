@@ -1,25 +1,36 @@
-import telebot
 import os
-import threading
-import requests 
-import time
 
-token = os.environ['TOKEN']
+from flask import Flask, request
+
+import telebot
+
+TOKEN = os.environ['TOKEN']
 chatID = os.environ['CHAT']
-print(token, chatID)
 
-def request_forever():
-    while 1:
-        r = requests.get("https://loh-s-cti.herokuapp.com/")
-        print(r.status_code)
-        time.sleep(1)
+bot = telebot.TeleBot(TOKEN)
+server = Flask(__name__)
 
-bot = telebot.TeleBot(token)
+
 @bot.message_handler()
-def repeat_all_messages(message): # Название функции не играет никакой роли
+def repeat_all_messages(message): 
     print(message.message_id)
     bot.forward_message(chatID, message.chat.id, message.message_id)
 
-if __name__ == '__main__':
-    threading.Thread(target=request_forever).start()
-    bot.infinity_polling()
+
+@server.route('/' + TOKEN, methods=['POST'])
+def getMessage():
+    json_string = request.get_data().decode('utf-8')
+    update = telebot.types.Update.de_json(json_string)
+    bot.process_new_updates([update])
+    return "!", 200
+
+
+@server.route("/")
+def webhook():
+    bot.remove_webhook()
+    bot.set_webhook(url='https://loh-s-cti.herokuapp.com/' + TOKEN)
+    return "!", 200
+
+
+if __name__ == "__main__":
+    server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
